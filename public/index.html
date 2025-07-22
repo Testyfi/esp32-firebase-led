@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ESP32 LED Control</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+</head>
+<body>
+  <h2>ESP32 LED Control Panel</h2>
+
+  <div id="loginDiv">
+    <input type="email" id="email" placeholder="Email"><br><br>
+    <input type="password" id="password" placeholder="Password"><br><br>
+    <button onclick="login()">Login</button>
+  </div>
+
+  <div id="controlDiv" style="display:none;">
+    <h3>LED Control</h3>
+    <button onclick="setLED('ON')">Turn ON</button>
+    <button onclick="setLED('OFF')">Turn OFF</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+  apiKey: "AIzaSyANDuKw7uXpJ1FR2wV5NnKMKGycD4eUe58",
+  authDomain: "realtimedatabaseesp.firebaseapp.com",
+databaseURL: "https://realtimedatabaseesp-default-rtdb.firebaseio.com",
+  projectId: "realtimedatabaseesp",
+  storageBucket: "realtimedatabaseesp.firebasestorage.app",
+  messagingSenderId: "863741216598",
+  appId: "1:863741216598:web:ef42d458a35707ca8438f7",
+  measurementId: "G-0MJX45MS4L"
+};
+    firebase.initializeApp(firebaseConfig);
+
+    const auth = firebase.auth();
+    const database = firebase.database();
+
+    function login() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+          document.getElementById('loginDiv').style.display = 'none';
+          document.getElementById('controlDiv').style.display = 'block';
+        })
+        .catch(err => alert(err.message));
+    }
+
+    function logout() {
+      auth.signOut().then(() => {
+        document.getElementById('controlDiv').style.display = 'none';
+        document.getElementById('loginDiv').style.display = 'block';
+      });
+    }
+
+    function setLED(state) {
+      database.ref("ledStatus").set(state);
+    }
+  </script>
+</body>
+</html>
